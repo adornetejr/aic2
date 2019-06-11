@@ -1,2 +1,4 @@
-# aic2
-Process Scheduler Simulator with First Come, First Served, Shortest Job First and Round Robin algorithms.
+# ProcessSchedulerSimulator
+Process Scheduler Simulator with Round Robin (built-in) and Custom Algorithm Support
+
+Third Semester Group Project for Operating Systems Module
