@@ -37,8 +37,9 @@ app.controller('ctrl', function ($scope, $interval) {
             args.push(Number($scope.algorithmArguments[$scope.algorithmParameters[aci].flag]));
         }
         scheduler.algorithm.apply(scheduler, args);
-        console.log(args);
         $scope.scheduler = scheduler;
+        document.getElementById("insert-file").style.display = "none";
+        document.getElementById("panel-file-list").style.display = "none";
         $scope.level = 1;  // increase level
     };
     $scope.isValidScheduler = function () {
@@ -80,14 +81,15 @@ app.controller('ctrl', function ($scope, $interval) {
         $scope.processes = [];
         $scope.maxProcessId = 0;
     };
-
-    //$scope.handleFileSelect = function (e) {
-    function handleFileSelect(e) {
+    $scope.handleDragOver = function (e) {
         e.stopPropagation();
         e.preventDefault();
-
+        e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    }
+    $scope.handleFileSelect = function (e) {
+        e.stopPropagation();
+        e.preventDefault();
         var files = e.dataTransfer.files; // FileList object.
-
         // files is a FileList of File objects. List some properties.
         var output = [];
         for (var i = 0, f; f = files[i]; i++) {
@@ -95,45 +97,177 @@ app.controller('ctrl', function ($scope, $interval) {
                 f.size, ' bytes, last modified: ',
                 f.lastModifiedDate.toLocaleDateString(), '</li>');
 
-            var reader = new FileReader();
-            
         }
-        document.getElementById('insert-file').innerHTML = '<ul>' + output.join('') + '</ul>';
-    
+        document.getElementById("drop-zone").style.display = "none";
+        document.getElementById("file-dropped").style.display = "block";
+        document.getElementById('file-dropped').innerHTML = '<ul>' + output.join('') + '</ul>';
+        document.getElementById("panel-file-list").style.display = "block";
+        $scope.handleFiles(files);
     }
-    
-    //$scope.handleDragOver = function (e) {
-    function handleDragOver(e) {
-        e.stopPropagation();
-        e.preventDefault();
-        e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    }
-
-    // Setup the dnd listeners.
-    var dropZone = document.getElementById('drop-zone');
-    dropZone.addEventListener('dragover', handleDragOver, false);
-    dropZone.addEventListener('drop', handleFileSelect, false);
-
-    $scope.addFile = function (e) {
-
-        document.getElementById('process-list-insertion').innerHTML = '<ul>' + output.join('') + '</ul>';
-    }
-
-
-    /*    
-        $scope.addFile = function (e) {
-            var file = e.target.files[0];
-            if (!file) {
-                return;
+    $scope.handleFiles = function (files) {
+        // Check for the various File API support.
+        if (window.FileReader) {
+            // FileReader are supported.
+            getAsText(files[0]);
+        } else {
+            alert('FileReader are not supported in this browser.');
+        }
+        function getAsText(fileToRead) {
+            var reader = new FileReader();
+            // Handle errors load
+            reader.onload = loadHandler;
+            reader.onerror = errorHandler;
+            // Read file into memory as UTF-8      
+            reader.readAsText(fileToRead);
+        }
+        function loadHandler(event) {
+            var csv = event.target.result;
+            processData(csv);
+        }
+        function processData(csv) {
+            var allTextLines = csv.split(/\r\n|\n/);
+            var lines = [];
+            while (allTextLines.length) {
+                lines.push(allTextLines.shift().split(' '));
             }
-            var reader = new FileReader();
-            reader.onload = function(e) {
-                var contents = e.target.result;
-                // Display file content
-                displayContents(contents);
-            };
-            reader.readAsText(file);
+            console.log(lines);
+            drawOutput(lines);
         }
+        //if your csv file contains the column names as the first line
+        function processDataAsObj(csv) {
+            var allTextLines = csv.split(/\r\n|\n/);
+            var lines = [];
+            //first line of csv
+            var keys = allTextLines.shift().split(' ');
+            while (allTextLines.length) {
+                var arr = allTextLines.shift().split(' ');
+                var obj = {};
+                for (var i = 0; i < keys.length; i++) {
+                    obj[keys[i]] = arr[i];
+                }
+                lines.push(obj);
+            }
+            console.log(lines);
+            drawOutputAsObj(lines);
+        }
+        function errorHandler(evt) {
+            if (evt.target.error.name == "NotReadableError") {
+                alert("Canno't read file!");
+            }
+        }
+        function drawOutput(lines) {
+            //Clear previous data
+            document.getElementById("file-process-list").innerHTML = "";
+            var table = document.createElement("table");
+            for (var i = 0; i < lines.length; i++) {
+                var row = table.insertRow(-1);
+                for (var j = 0; j < lines[i].length; j++) {
+                    var firstNameCell = row.insertCell(-1);
+                    firstNameCell.appendChild(document.createTextNode(lines[i][j]));
+                }
+            }
+            document.getElementById("file-process-list").appendChild(table);
+        }
+
+        //draw the table, if first line contains heading
+        function drawOutputAsObj(lines) {
+            //Clear previous data
+            document.getElementById("file-process-list").innerHTML = "";
+            var table = document.createElement("table");
+
+            //for the table headings
+            var tableHeader = table.insertRow(-1);
+            Object.keys(lines[0]).forEach(function (key) {
+                var el = document.createElement("TH");
+                el.innerHTML = key;
+                tableHeader.appendChild(el);
+            });
+
+            //the data
+            for (var i = 0; i < lines.length; i++) {
+                var row = table.insertRow(-1);
+                Object.keys(lines[0]).forEach(function (key) {
+                    var data = row.insertCell(-1);
+                    data.appendChild(document.createTextNode(lines[i][key]));
+                });
+            }
+            document.getElementById("file-process-list").appendChild(table);
+        }
+    }
+
+    $scope.addFile = function () {
+        document.getElementById("insert-file").style.display = "block";
+        document.getElementById("drop-zone").style.display = "block";
+        document.getElementById("file-dropped").style.display = "none";
+        // Setup the dnd listeners.
+        var dropZone = document.getElementById('drop-zone');
+        dropZone.addEventListener('dragover', $scope.handleDragOver, false);
+        dropZone.addEventListener('drop', $scope.handleFileSelect, false);
+    }
+    $scope.clearFile = function () {
+        document.getElementById("insert-file").style.display = "none";
+        document.getElementById("panel-file-list").style.display = "none";
+    }
+    /*
+        var file = document.getElementById('drop-zone').files[0];
+                if (file) {
+                    getAsText(file);
+                }
+        
+                function getAsText(readFile) {
+        
+                    var reader = new FileReader();
+        
+                    // Read file into memory as UTF-16
+                    console.log(reader.readAsText(readFile, "UTF-16"));
+        
+        
+                }
+                function updateProgress(e) {
+                    if (e.lengthComputable) {
+                        // e.loaded and e.total are ProgressEvent properties
+                        var loaded = (e.loaded / e.total);
+                        if (loaded < 1) {
+                            // Increase the prog bar length
+                            // style.width = (loaded * 200) + "px";
+                        }
+                    }
+                }
+        
+                function loaded(e) {
+                    // Obtain the read file data
+                    var fileString = e.target.result;
+                    // Handle UTF-16 file dump
+                    if (utils.regexp.isChinese(fileString)) {
+                        //Chinese Characters + Name validation
+                    }
+                    else {
+                        // run other charset test
+                    }
+                    // xhr.send(fileString)
+                }
+        
+                function errorHandler(e) {
+                    if (e.target.error.name == "NotReadableError") {
+                        // The file could not be read
+                    }
+                }
+        
+        
+                
+                var file = e.target.files[0];
+                            if (!file) {
+                                return;
+                            }
+                            var reader = new FileReader();
+                            reader.onload = function(e) {
+                                var contents = e.target.result;
+                                // Display file content
+                                displayContents(contents);
+                            };
+                            reader.readAsText(file);
+                        
+                        document.getElementById('process-list-insertion').innerHTML = '<ul>' + output.join('') + '</ul>';
     */
 
     $scope.removeProcess = function (prc) {
