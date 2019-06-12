@@ -24,13 +24,42 @@ var sortByKey = function (objArray, key) {
     });
 };
 
-
-var Simulator = function (scheduler, delay, initialProcesses) {
+var Simulator = function (scheduler, selectedAlgorithm, delay, initialProcesses) {
     this.delay = delay;  // the delay between clock pulses in milliseconds - must be managed externally
     this.scheduler = scheduler;  // configured scheduler to be used with the simulator
     this.tape = [];  // stack to store the time-line of process execution
+
+    this.algorithmArgs = [].concat(  // setup algorithm args for saving state
+        this.scheduler.algorithm.algorithmFlagsIn,
+        this.scheduler.algorithm.algorithmInternal,
+        this.scheduler.algorithm.algorithmFlagsOut
+    );
+
+    this.processArgs = [].concat(  // setup process args for saving state
+        this.scheduler.algorithm.processFlagsIn,
+        this.scheduler.algorithm.processInternal,
+        this.scheduler.algorithm.processFlagsOut
+    );
     this.initialProcesses = initialProcesses;  // add processes here to be automatically started at the arrival time
-    sortByKey(this.initialProcesses, 'arrival');  // in-place sort
+    this.algorithmName = "";
+    _.forEach(selectedAlgorithm, function (flag) {
+        if (flag == "Shortest Job First") {
+            this.algorithmName = flag;
+        }
+        if (flag == "First Come, First Served") {
+            this.algorithmName = flag;
+        }
+        if (flag == "Round Robin") {
+            this.algorithmName = flag;
+        }
+    });
+    document.getElementById("algorithm-name").innerText = 'Dispatcher' + this.algorithmName;
+    if (this.algorithmName == "Shortest Job First") {
+        sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
+    }
+    else {
+        sortByKey(this.initialProcesses, 'arrival');  // sort - there can be pre-added processes arriving after this
+    }
     this.maxid = 0;  // find the maximum id
     this.initialProcesses.forEach(function (element) {
         this.maxid = Math.max(this.maxid, (typeof element.id == 'undefined' || element.id === null) ? 0 : element.id);
@@ -48,7 +77,6 @@ var Simulator = function (scheduler, delay, initialProcesses) {
             this.scheduler.queue.push(this.initialProcesses.shift());  // move from initial to ready queue
         }  // we have to all processes arrived now
         this.saveState();  // when saving, save processes that are added now
-        // console.log(this.tape);  // TODO remove
         this.scheduler.tick();  // clock pulse
     };
 
@@ -62,24 +90,17 @@ var Simulator = function (scheduler, delay, initialProcesses) {
             process.id = ++this.maxid;
         }
         this.initialProcesses.push(process);  // add to the end of the initial processes queue
-        sortByKey(this.initialProcesses, 'arrival');  // sort - there can be pre-added processes arriving after this
+        if (this.algorithmName == "Shortest Job First") {
+            sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
+        }
+        else {
+            sortByKey(this.initialProcesses, 'arrival');  // sort - there can be pre-added processes arriving after this
+        }
     };
 
     this.killProcess = function (process) {  // kill a process which is currently in the ready queue
         this.scheduler.queue.splice(this.scheduler.queue.indexOf(process), 1);
     };
-
-    this.algorithmArgs = [].concat(  // setup algorithm args for saving state
-        this.scheduler.algorithm.algorithmFlagsIn,
-        this.scheduler.algorithm.algorithmInternal,
-        this.scheduler.algorithm.algorithmFlagsOut
-    );
-
-    this.processArgs = [].concat(  // setup process args for saving state
-        this.scheduler.algorithm.processFlagsIn,
-        this.scheduler.algorithm.processInternal,
-        this.scheduler.algorithm.processFlagsOut
-    );
 
     this.saveState = function () {  // saves current state into the tape
         var algorithmState = extractState(

@@ -145,7 +145,6 @@ app.controller('ctrl', function ($scope, $interval) {
         document.getElementById("file-process-list").innerHTML = "";
         var table = document.createElement("table");
         table.style.width = "100%";
-
         var tableHeader = table.insertRow(-1);
         for (var pai = 0; pai < $scope.processParameters.length; pai++) {
             var el = document.createElement("TH");
@@ -231,7 +230,7 @@ app.controller('ctrl', function ($scope, $interval) {
     };
     $scope.simulator = null;  // IMPORTANT !
     $scope.createSimulator = function () {
-        $scope.simulator = new Simulator($scope.scheduler, 1000 / $scope.speed, $scope.processes);
+        $scope.simulator = new Simulator($scope.scheduler, $scope.selectedAlgorithm, 1000 / $scope.speed, $scope.processes);
         $scope.level = 3;
     };
 
