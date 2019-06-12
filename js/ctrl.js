@@ -87,7 +87,7 @@ app.controller('ctrl', function ($scope, $interval) {
         e.stopPropagation();
         e.preventDefault();
         e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
-    }
+    };
     $scope.handleFileSelect = function (e) {
         e.stopPropagation();
         e.preventDefault();
@@ -105,7 +105,7 @@ app.controller('ctrl', function ($scope, $interval) {
         document.getElementById('file-dropped').innerHTML = '<ul>' + output.join('') + '</ul>';
         document.getElementById("panel-file-list").style.display = "block";
         $scope.handleFiles(files);
-    }
+    };
     $scope.handleFiles = function (files) {
         // Check for the various File API support.
         if (window.FileReader) {
@@ -113,7 +113,7 @@ app.controller('ctrl', function ($scope, $interval) {
             getAsText(files[0]);
         } else {
             alert('FileReader are not supported in this browser.');
-        }
+        };
         function getAsText(fileToRead) {
             var reader = new FileReader();
             // Handle errors load
@@ -121,20 +121,74 @@ app.controller('ctrl', function ($scope, $interval) {
             reader.onerror = errorHandler;
             // Read file into memory as UTF-8      
             reader.readAsText(fileToRead);
-        }
+        };
+        function errorHandler(evt) {
+            if (evt.target.error.name == "NotReadableError") {
+                alert("Canno't read file!");
+            };
+        };
         function loadHandler(event) {
             var csv = event.target.result;
-            processData(csv);
+            $scope.processData(csv);
+        };
+    };
+    $scope.processData = function (csv) {
+        var allTextLines = csv.split(/\r\n|\n/);
+        var lines = [];
+        while (allTextLines.length) {
+            lines.push(allTextLines.shift().split(' '));
         }
-        function processData(csv) {
-            var allTextLines = csv.split(/\r\n|\n/);
-            var lines = [];
-            while (allTextLines.length) {
-                lines.push(allTextLines.shift().split(' '));
+        $scope.drawOutput(lines);
+    };
+    $scope.drawOutput = function (lines) {
+        //Clear previous data
+        document.getElementById("file-process-list").innerHTML = "";
+        var table = document.createElement("table");
+        table.style.width = "100%";
+
+        var tableHeader = table.insertRow(-1);
+        for (var pai = 0; pai < $scope.processParameters.length; pai++) {
+            var el = document.createElement("TH");
+            el.innerHTML = $scope.processParameters[pai].name
+            tableHeader.style.padding = "8px";
+            tableHeader.appendChild(el);
+        }
+        for (var i = 0; i < lines.length; i++) {
+            var row = table.insertRow(-1);
+            for (var j = 0; j < lines[i].length; j++) {
+                var cell = row.insertCell(-1);
+                cell.className = "col-sm-4";
+                cell.style.padding = "8px";
+                cell.style.paddingLeft = "0px";
+                if (lines[i][j] == '') {
+                    alert("There are values missing from .txt file!");
+                }
+                else {
+                    if (j == 0) {
+                        cell.appendChild(document.createTextNode("process_"));
+                    }
+                    cell.appendChild(document.createTextNode(lines[i][j]));
+                }
             }
-            console.log(lines);
-            drawOutput(lines);
         }
+        document.getElementById("file-process-list").appendChild(table);
+        $scope.addProcessFromFile(lines);
+    };
+
+    $scope.addProcessFromFile = function (lines) {
+        for (var i = 0; i < lines.length; i++) {
+            var j = -1;
+            _.forEach(_.keys($scope.processArguments), function (key) {
+                v = lines[i][++j];
+                console.log(key);
+                var val = $scope.processArguments[key];
+                console.log(v);
+                val = v;
+            })
+        }
+    };
+
+    /*
         //if your csv file contains the column names as the first line
         function processDataAsObj(csv) {
             var allTextLines = csv.split(/\r\n|\n/);
@@ -149,32 +203,9 @@ app.controller('ctrl', function ($scope, $interval) {
                 }
                 lines.push(obj);
             }
-            console.log(lines);
             drawOutputAsObj(lines);
         }
-        function errorHandler(evt) {
-            if (evt.target.error.name == "NotReadableError") {
-                alert("Canno't read file!");
-            }
-        }
-        function drawOutput(lines) {
-            //Clear previous data
-            //document.getElementById("file-process-list").innerHTML = "";
-            var table = document.createElement("table");
-            table.style.padding = '8px';
-            
-            
-            for (var i = 0; i < lines.length; i++) {
-                var row = table.insertRow(-1);
-                row.align;
-                for (var j = 0; j < lines[i].length; j++) {
-                    var firstNameCell = row.insertCell(-1);
-                    firstNameCell.appendChild(document.createTextNode(lines[i][j]));
-                }
-            }
-            document.getElementById("file-process-list").appendChild(table);
-        }
-
+     
         //draw the table, if first line contains heading
         function drawOutputAsObj(lines) {
             //Clear previous data
@@ -187,7 +218,7 @@ app.controller('ctrl', function ($scope, $interval) {
                 el.innerHTML = key;
                 tableHeader.appendChild(el);
             });
-
+     
             //the data
             for (var i = 0; i < lines.length; i++) {
                 var row = table.insertRow(-1);
@@ -198,7 +229,7 @@ app.controller('ctrl', function ($scope, $interval) {
             }
             document.getElementById("file-process-list").appendChild(table);
         }
-    }
+    */
 
     $scope.addFile = function () {
         document.getElementById("insert-file").style.display = "block";
@@ -207,8 +238,6 @@ app.controller('ctrl', function ($scope, $interval) {
         ////////remove-here        
         //document.getElementById("panel-file-list").style.display = "none";
         //document.getElementById("file-dropped").style.display = "none";
-
-
         // Setup the dnd listeners.
         var dropZone = document.getElementById('drop-zone');
         dropZone.addEventListener('dragover', $scope.handleDragOver, false);
@@ -229,7 +258,7 @@ app.controller('ctrl', function ($scope, $interval) {
                     var reader = new FileReader();
         
                     // Read file into memory as UTF-16
-                    console.log(reader.readAsText(readFile, "UTF-16"));
+                    reader.readAsText(readFile, "UTF-16");
         
         
                 }

@@ -19,7 +19,7 @@ firstCome.processFlagsIn = [
         flag: 'name',  // attribute of the object to track
         name: 'Name',  // actual text to be displayed in the tables
         description: 'Name of the process',  // bootstrap's placeholders
-        initial: "'process_' + Math.floor(Math.random()  * 1000)"  // will be called with eval()
+        initial: "'process_' + Math.floor(100 + (Math.random() * 900))"  // will be called with eval()
     },
     {
         flag: 'arrival',
