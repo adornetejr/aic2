@@ -31,7 +31,6 @@ var Simulator = function (scheduler, delay, initialProcesses) {
     this.tape = [];  // stack to store the time-line of process execution
     this.initialProcesses = initialProcesses;  // add processes here to be automatically started at the arrival time
     sortByKey(this.initialProcesses, 'arrival');  // in-place sort
-
     this.maxid = 0;  // find the maximum id
     this.initialProcesses.forEach(function (element) {
         this.maxid = Math.max(this.maxid, (typeof element.id == 'undefined' || element.id === null) ? 0 : element.id);

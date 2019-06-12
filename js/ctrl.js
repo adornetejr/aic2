@@ -39,9 +39,9 @@ app.controller('ctrl', function ($scope, $interval) {
         scheduler.algorithm.apply(scheduler, args);
         $scope.scheduler = scheduler;
 
-        ///////remove-here
-        //document.getElementById("insert-file").style.display = "none";
-        //document.getElementById("panel-file-list").style.display = "none";
+        ////////remove-here
+        document.getElementById("insert-file").style.display = "none";
+        document.getElementById("panel-file-list").style.display = "none";
         $scope.level = 1;  // increase level
     };
     $scope.isValidScheduler = function () {
@@ -139,7 +139,7 @@ app.controller('ctrl', function ($scope, $interval) {
             lines.push(allTextLines.shift().split(' '));
         }
         $scope.drawInput(lines);
-        $scope.insertProcesses(lines);
+        $scope.loadProcesses(lines);
     };
     $scope.drawInput = function (lines) {
         //Clear previous data
@@ -174,7 +174,7 @@ app.controller('ctrl', function ($scope, $interval) {
         }
         document.getElementById("file-process-list").appendChild(table);
     };
-    $scope.insertProcesses = function (lines) {
+    $scope.loadProcesses = function (lines) {
         for (var i = 0; i < lines.length; i++) {
             var j = -1;
             if (lines[i][0] == '') {
@@ -182,16 +182,13 @@ app.controller('ctrl', function ($scope, $interval) {
             }
             else {
                 _.forEach(_.keys($scope.processArguments), function (key) {
-                    if (j==-1) {
+                    if (j == -1) {
                         value = 'process_0' + lines[i][++j];
                     } else {
                         value = lines[i][++j];
                     }
-                    console.log(key);
-                    $scope.processArguments[key]=value;
+                    $scope.processArguments[key] = value;
                 })
-                console.log($scope.processArguments);
-
                 $scope.processArguments.id = i;
                 ++$scope.maxProcessId;  // this is an internal flag
                 _.forEach($scope.selectedAlgorithm.func.processFlagsOut, function (flag) {
@@ -202,57 +199,16 @@ app.controller('ctrl', function ($scope, $interval) {
             }
         }
     };
-
-    /*
-        //if your csv file contains the column names as the first line
-        function processDataAsObj(csv) {
-            var allTextLines = csv.split(/\r\n|\n/);
-            var lines = [];
-            //first line of csv
-            var keys = allTextLines.shift().split(' ');
-            while (allTextLines.length) {
-                var arr = allTextLines.shift().split(' ');
-                var obj = {};
-                for (var i = 0; i < keys.length; i++) {
-                    obj[keys[i]] = arr[i];
-                }
-                lines.push(obj);
-            }
-            drawInputAsObj(lines);
-        }
-     
-        //draw the table, if first line contains heading
-        function drawInputAsObj(lines) {
-            //Clear previous data
-            //document.getElementById("file-process-list").innerHTML = "";
-            var table = document.createElement("table");
-            //for the table headings
-            var tableHeader = table.insertRow(-1);
-            Object.keys(lines[0]).forEach(function (key) {
-                var el = document.createElement("TH");
-                el.innerHTML = key;
-                tableHeader.appendChild(el);
-            });
-     
-            //the data
-            for (var i = 0; i < lines.length; i++) {
-                var row = table.insertRow(-1);
-                Object.keys(lines[0]).forEach(function (key) {
-                    var data = row.insertCell(-1);
-                    data.appendChild(document.createTextNode(lines[i][key]));
-                });
-            }
-            document.getElementById("file-process-list").appendChild(table);
-        }
-    */
-
+    $scope.insertProcesses = function () {
+        document.getElementById("panel-file-list").style.display = "none";
+        $scope.clearProcess();
+    };
     $scope.addFile = function () {
         document.getElementById("insert-file").style.display = "block";
         document.getElementById("drop-zone").style.display = "block";
-
         ////////remove-here        
-        //document.getElementById("panel-file-list").style.display = "none";
-        //document.getElementById("file-dropped").style.display = "none";
+        document.getElementById("panel-file-list").style.display = "none";
+        document.getElementById("file-dropped").style.display = "none";
         // Setup the dnd listeners.
         var dropZone = document.getElementById('drop-zone');
         dropZone.addEventListener('dragover', $scope.handleDragOver, false);
@@ -261,69 +217,8 @@ app.controller('ctrl', function ($scope, $interval) {
     $scope.clearFile = function () {
         document.getElementById("insert-file").style.display = "none";
         document.getElementById("panel-file-list").style.display = "none";
+        $scope.clearProcesses();
     }
-    /*
-        var file = document.getElementById('drop-zone').files[0];
-                if (file) {
-                    getAsText(file);
-                }
-        
-                function getAsText(readFile) {
-        
-                    var reader = new FileReader();
-        
-                    // Read file into memory as UTF-16
-                    reader.readAsText(readFile, "UTF-16");
-        
-        
-                }
-                function updateProgress(e) {
-                    if (e.lengthComputable) {
-                        // e.loaded and e.total are ProgressEvent properties
-                        var loaded = (e.loaded / e.total);
-                        if (loaded < 1) {
-                            // Increase the prog bar length
-                            // style.width = (loaded * 200) + "px";
-                        }
-                    }
-                }
-        
-                function loaded(e) {
-                    // Obtain the read file data
-                    var fileString = e.target.result;
-                    // Handle UTF-16 file dump
-                    if (utils.regexp.isChinese(fileString)) {
-                        //Chinese Characters + Name validation
-                    }
-                    else {
-                        // run other charset test
-                    }
-                    // xhr.send(fileString)
-                }
-        
-                function errorHandler(e) {
-                    if (e.target.error.name == "NotReadableError") {
-                        // The file could not be read
-                    }
-                }
-        
-        
-                
-                var file = e.target.files[0];
-                            if (!file) {
-                                return;
-                            }
-                            var reader = new FileReader();
-                            reader.onload = function(e) {
-                                var contents = e.target.result;
-                                // Display file content
-                                displayContents(contents);
-                            };
-                            reader.readAsText(file);
-                        
-                        document.getElementById('process-list-insertion').innerHTML = '<ul>' + output.join('') + '</ul>';
-    */
-
     $scope.removeProcess = function (prc) {
         $scope.processes.splice($scope.processes.indexOf(prc), 1);
     };
