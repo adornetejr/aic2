@@ -39,7 +39,7 @@ app.controller('ctrl', function ($scope, $interval) {
         scheduler.algorithm.apply(scheduler, args);
         $scope.scheduler = scheduler;
 
-    ///////remove-here
+        ///////remove-here
         //document.getElementById("insert-file").style.display = "none";
         //document.getElementById("panel-file-list").style.display = "none";
         $scope.level = 1;  // increase level
@@ -159,10 +159,14 @@ app.controller('ctrl', function ($scope, $interval) {
         }
         function drawOutput(lines) {
             //Clear previous data
-            document.getElementById("file-process-list").innerHTML = "";
+            //document.getElementById("file-process-list").innerHTML = "";
             var table = document.createElement("table");
+            table.style.padding = '8px';
+            
+            
             for (var i = 0; i < lines.length; i++) {
                 var row = table.insertRow(-1);
+                row.align;
                 for (var j = 0; j < lines[i].length; j++) {
                     var firstNameCell = row.insertCell(-1);
                     firstNameCell.appendChild(document.createTextNode(lines[i][j]));
@@ -174,9 +178,8 @@ app.controller('ctrl', function ($scope, $interval) {
         //draw the table, if first line contains heading
         function drawOutputAsObj(lines) {
             //Clear previous data
-            document.getElementById("file-process-list").innerHTML = "";
+            //document.getElementById("file-process-list").innerHTML = "";
             var table = document.createElement("table");
-
             //for the table headings
             var tableHeader = table.insertRow(-1);
             Object.keys(lines[0]).forEach(function (key) {
@@ -201,11 +204,11 @@ app.controller('ctrl', function ($scope, $interval) {
         document.getElementById("insert-file").style.display = "block";
         document.getElementById("drop-zone").style.display = "block";
 
-////////remove-here        
+        ////////remove-here        
         //document.getElementById("panel-file-list").style.display = "none";
         //document.getElementById("file-dropped").style.display = "none";
 
-        
+
         // Setup the dnd listeners.
         var dropZone = document.getElementById('drop-zone');
         dropZone.addEventListener('dragover', $scope.handleDragOver, false);
