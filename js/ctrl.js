@@ -81,6 +81,7 @@ app.controller('ctrl', function ($scope, $interval) {
         $scope.maxProcessId = 0;
     };
 
+    //$scope.handleFileSelect = function (e) {
     function handleFileSelect(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -93,10 +94,15 @@ app.controller('ctrl', function ($scope, $interval) {
             output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
                 f.size, ' bytes, last modified: ',
                 f.lastModifiedDate.toLocaleDateString(), '</li>');
-        }
-        document.getElementById('insert-process').innerHTML = '<ul>' + output.join('') + '</ul>';
-    }
 
+            var reader = new FileReader();
+            
+        }
+        document.getElementById('insert-file').innerHTML = '<ul>' + output.join('') + '</ul>';
+    
+    }
+    
+    //$scope.handleDragOver = function (e) {
     function handleDragOver(e) {
         e.stopPropagation();
         e.preventDefault();
@@ -110,6 +116,7 @@ app.controller('ctrl', function ($scope, $interval) {
 
     $scope.addFile = function (e) {
 
+        document.getElementById('process-list-insertion').innerHTML = '<ul>' + output.join('') + '</ul>';
     }
 
 
