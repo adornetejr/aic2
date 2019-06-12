@@ -233,7 +233,7 @@ app.controller('ctrl', function ($scope, $interval) {
         $scope.simulator = new Simulator($scope.scheduler, $scope.selectedAlgorithm, 1000 / $scope.speed, $scope.processes);
         $scope.level = 3;
     };
-
+    
     // level 3 /////////////////////////////////////////////////////////////////////////////////////////////////////////
     $scope.intervalHandler = null;
     $scope.playing = false;

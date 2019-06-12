@@ -45,15 +45,17 @@ var Simulator = function (scheduler, selectedAlgorithm, delay, initialProcesses)
     _.forEach(selectedAlgorithm, function (flag) {
         if (flag == "Shortest Job First") {
             this.algorithmName = flag;
+            document.getElementById("algorithm-name").innerText = this.algorithmName;
         }
         if (flag == "First Come, First Served") {
             this.algorithmName = flag;
+            document.getElementById("algorithm-name").innerText = this.algorithmName;
         }
         if (flag == "Round Robin") {
             this.algorithmName = flag;
+            document.getElementById("algorithm-name").innerText = this.algorithmName;
         }
     });
-    document.getElementById("algorithm-name").innerText = 'Dispatcher' + this.algorithmName;
     if (this.algorithmName == "Shortest Job First") {
         sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
     }
