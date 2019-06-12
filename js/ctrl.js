@@ -188,8 +188,7 @@ app.controller('ctrl', function ($scope, $interval) {
                     }
                     $scope.processArguments[key] = value;
                 })
-                $scope.processArguments.id = i;
-                ++$scope.maxProcessId;  // this is an internal flag
+                $scope.processArguments.id = ++$scope.maxProcessId;  // this is an internal flag
                 _.forEach($scope.selectedAlgorithm.func.processFlagsOut, function (flag) {
                     $scope.processArguments[flag.flag] = 0;  // make all out flags zero
                 });
