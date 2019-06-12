@@ -108,16 +108,16 @@ roundRobin.processFlagsOut = [
 
 roundRobin.algorithmFlagsIn = [
     {
-        flag: 'switchTime',
-        name: 'Process Switch Time',
-        description: 'Time taken for context switching',
-        initial: "1"
-    },
-    {
         flag: 'quantum',
         name: 'Quantum',
         description: 'Time quantum',
         initial: "10"
+    },
+    {
+        flag: 'switchTime',
+        name: 'Process Switch Time',
+        description: 'Time taken for context switching',
+        initial: "1"
     }
 ];
 roundRobin.algorithmInternal = [{ flag: 'switchAt' }, { flag: 'processEnded' }, { flag: 'currently' }];

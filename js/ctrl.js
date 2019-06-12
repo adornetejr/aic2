@@ -138,9 +138,10 @@ app.controller('ctrl', function ($scope, $interval) {
         while (allTextLines.length) {
             lines.push(allTextLines.shift().split(' '));
         }
-        $scope.drawOutput(lines);
+        $scope.drawInput(lines);
+        $scope.insertProcesses(lines);
     };
-    $scope.drawOutput = function (lines) {
+    $scope.drawInput = function (lines) {
         //Clear previous data
         document.getElementById("file-process-list").innerHTML = "";
         var table = document.createElement("table");
@@ -161,30 +162,44 @@ app.controller('ctrl', function ($scope, $interval) {
                 cell.style.padding = "8px";
                 cell.style.paddingLeft = "0px";
                 if (lines[i][j] == '') {
-                    alert("There are values missing from .txt file!");
+                    //do nothing
                 }
                 else {
                     if (j == 0) {
-                        cell.appendChild(document.createTextNode("process_"));
+                        cell.appendChild(document.createTextNode("process_0"));
                     }
                     cell.appendChild(document.createTextNode(lines[i][j]));
                 }
             }
         }
         document.getElementById("file-process-list").appendChild(table);
-        $scope.addProcessFromFile(lines);
     };
-
-    $scope.addProcessFromFile = function (lines) {
+    $scope.insertProcesses = function (lines) {
         for (var i = 0; i < lines.length; i++) {
             var j = -1;
-            _.forEach(_.keys($scope.processArguments), function (key) {
-                v = lines[i][++j];
-                console.log(key);
-                var val = $scope.processArguments[key];
-                console.log(v);
-                val = v;
-            })
+            if (lines[i][0] == '') {
+                alert("There are values missing from .txt file!");
+            }
+            else {
+                _.forEach(_.keys($scope.processArguments), function (key) {
+                    if (j==-1) {
+                        value = 'process_0' + lines[i][++j];
+                    } else {
+                        value = lines[i][++j];
+                    }
+                    console.log(key);
+                    $scope.processArguments[key]=value;
+                })
+                console.log($scope.processArguments);
+
+                $scope.processArguments.id = i;
+                ++$scope.maxProcessId;  // this is an internal flag
+                _.forEach($scope.selectedAlgorithm.func.processFlagsOut, function (flag) {
+                    $scope.processArguments[flag.flag] = 0;  // make all out flags zero
+                });
+                $scope.processes.push($scope.processArguments);
+                $scope.clearProcess();
+            }
         }
     };
 
@@ -203,11 +218,11 @@ app.controller('ctrl', function ($scope, $interval) {
                 }
                 lines.push(obj);
             }
-            drawOutputAsObj(lines);
+            drawInputAsObj(lines);
         }
      
         //draw the table, if first line contains heading
-        function drawOutputAsObj(lines) {
+        function drawInputAsObj(lines) {
             //Clear previous data
             //document.getElementById("file-process-list").innerHTML = "";
             var table = document.createElement("table");
