@@ -38,8 +38,7 @@ app.controller('ctrl', function ($scope, $interval) {
         }
         scheduler.algorithm.apply(scheduler, args);
         $scope.scheduler = scheduler;
-
-        ////////remove-here
+////////remove-here
         document.getElementById("insert-file").style.display = "none";
         document.getElementById("panel-file-list").style.display = "none";
         $scope.level = 1;  // increase level
