@@ -56,7 +56,6 @@ var Simulator = function (scheduler, selectedAlgorithm, delay, initialProcesses)
             document.getElementById("algorithm-name").innerText = this.algorithmName;
         }
     });
-    console.log(algorithmName);
     if (algorithmName == "Shortest Job First") {
         sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
     }
@@ -159,7 +158,6 @@ var Simulator = function (scheduler, selectedAlgorithm, delay, initialProcesses)
                 })
             );
             this.scheduler.queue.push(process);
-
             // cross-check with id whether the process has ended and added into the endedQueue
             // if so, remove it from the endedQueue - a process cannot be ended and ready at the same time
             for (var r = 0; r < this.scheduler.endedQueue.length; r++) {
