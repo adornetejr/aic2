@@ -33,21 +33,21 @@ shortestJob.processFlagsIn = [
         initial: "10 + Math.floor(Math.random()  * 100)"
     }
 ];  // these flags tell what will be the inputs
-shortestJob.processInternal = [{flag: 'id'}];  // these flags tell what extra details to store in the tape
+shortestJob.processInternal = [{ flag: 'id' }];  // these flags tell what extra details to store in the tape
 shortestJob.processFlagsOut = [
-    {flag: 'time', name: 'Position'},
-    {flag: 'service', name: 'Service time'},
-    {flag: 'wait', name: 'Waiting time'},
-    {flag: 'end', name: 'Ending time'}
+    { flag: 'time', name: 'Position' },
+    { flag: 'service', name: 'Service time' },
+    { flag: 'wait', name: 'Waiting time' },
+    { flag: 'end', name: 'Ending time' }
 ];  // these flags tell what to be captured as the result
 
 shortestJob.algorithmFlagsIn = [
     {
         flag: 'switchTime',
-        name: 'Algorithm Switch Time',
+        name: 'Process Switch Time',
         description: 'Time taken for context switching',
         initial: "1"
     }
 ];
-shortestJob.algorithmInternal = [{flag: 'switchAt'}, {flag: 'processEnded'}, {flag: 'currently'}];
-shortestJob.algorithmFlagsOut = [{flag: 'time', name: 'Time'}];
+shortestJob.algorithmInternal = [{ flag: 'switchAt' }, { flag: 'processEnded' }, { flag: 'currently' }];
+shortestJob.algorithmFlagsOut = [{ flag: 'time', name: 'Time' }];

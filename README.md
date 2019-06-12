@@ -1,4 +1,4 @@
 # ProcessSchedulerSimulator
-Process Scheduler Simulator with First Come, First Served, Shortest Job First and Round Robin algorithms.
+Process Scheduler Simulator with Round Robin (built-in) and Custom Algorithm Support
 
-Fisrt Semester Group Project for Curricular Integration Activity II
+Third Semester Group Project for Operating Systems Module

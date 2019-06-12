@@ -183,6 +183,6 @@ var Simulator = function (scheduler, delay, initialProcesses) {
 
         return processStates;
     };
-    
+
 
 };  // end Simulator

@@ -139,12 +139,29 @@
                 </button>
             </div>
         </div>
+        <div class="panel panel-primary">
+            <div class="panel-heading">
+                <h3 class="panel-title">Insert Processes File</h3>
+            </div>
+
+            <div class="panel-body">
+                <div id="drop-zone">Drop .txt file here</div>
+                <output id="insert-process"></output>
+            </div>
+
+            <div class="panel-footer">
+                <button type="button" class="btn btn-primary" ng-click="addFile()"
+                        ng-disabled="!isValidProcess()">
+                    Add File
+                </button>
+            </div>
+        </div>
     </div>
 
     <div id="process-create" class="col-md-4" ng-show="level == 1">
         <div class="panel panel-info">
             <div class="panel-heading">
-                <h3 class="panel-title">Create Process</h3>
+                <h3 class="panel-title">Create Random Process</h3>
             </div>
 
             <div class="panel-body">
@@ -157,10 +174,6 @@
             </div>
 
             <div class="panel-footer">
-                <button type="button" class="btn btn-primary" ng-click="addFile()"
-                        ng-disabled="!isValidProcess()">
-                    Add File
-                </button>
                 <button type="button" class="btn btn-primary" ng-click="addProcess()"
                         ng-disabled="!isValidProcess()">
                     Add Process
@@ -291,7 +304,7 @@
                              style="line-height: : 20px">
                             <span class="sr-only">{{ 100/(simulator.scheduler.time+1) }}% Complete</span>
                         </div>
-                        <div ng-if="simulator.tape.length > 0"
+                           <div ng-if="simulator.tape.length > 0"
                              class="progress-bar {{ getTransition(simulator.tape.length) }}"
                              role="progressbar"
                              aria-valuenow="{{ simulator.scheduler.time }}" aria-valuemin="0"

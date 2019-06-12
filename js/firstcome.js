@@ -35,22 +35,22 @@ firstCome.processFlagsIn = [
     }
 ];  // these flags tell what will be the inputs
 
-firstCome.processInternal = [{flag: 'id'}];  // these flags tell what extra details to store in the tape
+firstCome.processInternal = [{ flag: 'id' }];  // these flags tell what extra details to store in the tape
 
 firstCome.processFlagsOut = [
-    {flag: 'time', name: 'Position'},
-    {flag: 'service', name: 'Service time'},
-    {flag: 'wait', name: 'Waiting time'},
-    {flag: 'end', name: 'Ending time'}
+    { flag: 'time', name: 'Position' },
+    { flag: 'service', name: 'Service time' },
+    { flag: 'wait', name: 'Waiting time' },
+    { flag: 'end', name: 'Ending time' }
 ];  // these flags tell what to be captured as the result
 
 firstCome.algorithmFlagsIn = [
     {
         flag: 'switchTime',
-        name: 'Algorithm Switch Time',
+        name: 'Process Switch Time',
         description: 'Time taken for context switching',
         initial: "1"
     }
 ];
-firstCome.algorithmInternal = [{flag: 'switchAt'}, {flag: 'processEnded'}, {flag: 'currently'}];
-firstCome.algorithmFlagsOut = [{flag: 'time', name: 'Time'}];
+firstCome.algorithmInternal = [{ flag: 'switchAt' }, { flag: 'processEnded' }, { flag: 'currently' }];
+firstCome.algorithmFlagsOut = [{ flag: 'time', name: 'Time' }];

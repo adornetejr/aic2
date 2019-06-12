@@ -80,22 +80,54 @@ app.controller('ctrl', function ($scope, $interval) {
         $scope.processes = [];
         $scope.maxProcessId = 0;
     };
-    
-/*    
-    $scope.addFile = function (e) {
-        var file = e.target.files[0];
-        if (!file) {
-            return;
+
+    function handleFileSelect(e) {
+        e.stopPropagation();
+        e.preventDefault();
+
+        var files = e.dataTransfer.files; // FileList object.
+
+        // files is a FileList of File objects. List some properties.
+        var output = [];
+        for (var i = 0, f; f = files[i]; i++) {
+            output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
+                f.size, ' bytes, last modified: ',
+                f.lastModifiedDate.toLocaleDateString(), '</li>');
         }
-        var reader = new FileReader();
-        reader.onload = function(e) {
-            var contents = e.target.result;
-            // Display file content
-            displayContents(contents);
-        };
-        reader.readAsText(file);
+        document.getElementById('insert-process').innerHTML = '<ul>' + output.join('') + '</ul>';
     }
-*/
+
+    function handleDragOver(e) {
+        e.stopPropagation();
+        e.preventDefault();
+        e.dataTransfer.dropEffect = 'copy'; // Explicitly show this is a copy.
+    }
+
+    // Setup the dnd listeners.
+    var dropZone = document.getElementById('drop-zone');
+    dropZone.addEventListener('dragover', handleDragOver, false);
+    dropZone.addEventListener('drop', handleFileSelect, false);
+
+    $scope.addFile = function (e) {
+
+    }
+
+
+    /*    
+        $scope.addFile = function (e) {
+            var file = e.target.files[0];
+            if (!file) {
+                return;
+            }
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                var contents = e.target.result;
+                // Display file content
+                displayContents(contents);
+            };
+            reader.readAsText(file);
+        }
+    */
 
     $scope.removeProcess = function (prc) {
         $scope.processes.splice($scope.processes.indexOf(prc), 1);
