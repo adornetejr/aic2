@@ -38,8 +38,10 @@ app.controller('ctrl', function ($scope, $interval) {
         }
         scheduler.algorithm.apply(scheduler, args);
         $scope.scheduler = scheduler;
-        document.getElementById("insert-file").style.display = "none";
-        document.getElementById("panel-file-list").style.display = "none";
+
+    ///////remove-here
+        //document.getElementById("insert-file").style.display = "none";
+        //document.getElementById("panel-file-list").style.display = "none";
         $scope.level = 1;  // increase level
     };
     $scope.isValidScheduler = function () {
@@ -198,7 +200,12 @@ app.controller('ctrl', function ($scope, $interval) {
     $scope.addFile = function () {
         document.getElementById("insert-file").style.display = "block";
         document.getElementById("drop-zone").style.display = "block";
-        document.getElementById("file-dropped").style.display = "none";
+
+////////remove-here        
+        //document.getElementById("panel-file-list").style.display = "none";
+        //document.getElementById("file-dropped").style.display = "none";
+
+        
         // Setup the dnd listeners.
         var dropZone = document.getElementById('drop-zone');
         dropZone.addEventListener('dragover', $scope.handleDragOver, false);
