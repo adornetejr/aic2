@@ -43,7 +43,7 @@ var shortestJob = function () {
 
             sortByKey(this.queue, 'execution');  // sort by execution time
 
-            if (this.queue[0].time == 0) {
+            if ((this.queue[0].time == 0) && (this.queue[0].service == 0)) {
                 this.queue[0].service = this.time - 1;
                 this.queue[0].wait = this.queue[0].service - this.queue[0].arrival;
             }
