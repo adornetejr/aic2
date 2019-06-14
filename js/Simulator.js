@@ -56,12 +56,12 @@ var Simulator = function (scheduler, selectedAlgorithm, delay, initialProcesses)
             document.getElementById("algorithm-name").innerText = this.algorithmName;
         }
     });
-    if (algorithmName == "Shortest Job First") {
-        sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
-    }
-    else {
+//    if (algorithmName == "Shortest Job First") {
+//        sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
+//    }
+//    else {
         sortByKey(this.initialProcesses, 'arrival');  // sort - there can be pre-added processes arriving after this
-    }
+//    }
     this.maxid = 0;  // find the maximum id
     this.initialProcesses.forEach(function (element) {
         this.maxid = Math.max(this.maxid, (typeof element.id == 'undefined' || element.id === null) ? 0 : element.id);
@@ -92,12 +92,12 @@ var Simulator = function (scheduler, selectedAlgorithm, delay, initialProcesses)
             process.id = ++this.maxid;
         }
         this.initialProcesses.push(process);  // add to the end of the initial processes queue
-        if (algorithmName == "Shortest Job First") {
-            sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
-        }
-        else {
+//        if (algorithmName == "Shortest Job First") {
+//            sortByKey(this.initialProcesses, 'execution');  // sort - there can be pre-added processes arriving after this
+//        }
+//        else {
             sortByKey(this.initialProcesses, 'arrival');  // sort - there can be pre-added processes arriving after this
-        }
+//        }
     };
 
     this.killProcess = function (process) {  // kill a process which is currently in the ready queue
