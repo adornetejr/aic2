@@ -47,8 +47,19 @@ var shortestJob = function () {
                 this.queue[0].service = this.time - 1;
                 this.queue[0].wait = this.queue[0].service - this.queue[0].arrival;
             }
+
+
+
+            console.log((this.queue[1].execution - this.queue[1].time) + ' < ' + (this.queue[0].execution - this.queue[0].time));
+            if ((this.queue[1].execution - this.queue[1].time) < (this.queue[0].execution - this.queue[0].time)) {  // switchTime needed
+
+                    this.currently = 'waste';
+                    this.queue.push(this.queue.shift());
+            }
+
             this.queue[0].time += 1;
             this.currently = "" + this.queue[0].id;  // running state
+
 
             if (this.queue[0].time == this.queue[0].execution) {  // process has finished execution
                 this.queue[0].end = this.time;
