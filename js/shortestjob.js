@@ -19,6 +19,7 @@ var shortestJob = function () {
         // there should be some processes to run, otherwise return the same this.queue given
         if (this.queue.length < 1) {
             // if idle, dispatcher has enough time - it should start the next process as soon as it arrives
+            this.switchAt = this.time;
             this.currently = 'idle';
             return;
         }
@@ -34,14 +35,17 @@ var shortestJob = function () {
             if (this.queue[0].time == this.queue[0].execution) {  // process has finished execution
                 this.queue[0].end = this.time;
                 this.endedQueue.push(this.queue.shift());  // do the process removal now
-                this.switchAt = this.time;  // restart switch timer n.b.: this.switchTime = 0
-            } else if (this.time == this.switchAt) {  // switchTime needed
-                this.queue.push(this.queue.shift());  // perform task switchTime
             }
-
         } else if (this.queue.length > 1) {
 
             sortByKey(this.queue, 'execution');  // sort by execution time
+
+            console.log((this.queue[1].execution - this.queue[1].time) + ' < ' + (this.queue[0].execution - this.queue[0].time));
+            if ((this.queue[1].execution - this.queue[1].time) < (this.queue[0].execution - this.queue[0].time)) {  // switchTime needed
+                this.currently = 'waste';
+                this.queue.push(this.queue.shift());
+            }
+
 
             if ((this.queue[0].time == 0) && (this.queue[0].service == 0)) {
                 this.queue[0].service = this.time - 1;
@@ -64,12 +68,14 @@ var shortestJob = function () {
             if (this.queue[0].time == this.queue[0].execution) {  // process has finished execution
                 this.queue[0].end = this.time;
                 this.endedQueue.push(this.queue.shift());  // do the process removal now
+                this.currently = 'waste';
                 this.switchAt = this.time;  // restart switch timer n.b.: this.switchTime = 0
             } else if (this.time == this.switchAt) {  // switchTime needed
-                this.queue.push(this.queue.shift());  // perform task switchTime
+                this.currently = 'waste';
+                this.queue.push(this.queue.shift());
             }
         }
-    };
+    }
 };
 
 // static variables of the function
